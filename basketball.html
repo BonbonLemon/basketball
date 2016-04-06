@@ -24,16 +24,33 @@ function preload() {
 
     game.load.image('ball', 'assets/ball.png');
     game.load.image('hoop', 'assets/hoop.png');
+		game.load.image('side rim', 'assets/side_rim.png');
+		game.load.image('front rim', 'assets/front_rim.png');
 
 }
 
+var hoop, ball;
+
 function create() {
+
+	game.physics.startSystem(Phaser.Physics.ARCADE);
 
 	game.stage.backgroundColor = "#ffffff";
 
-	game.add.sprite(141, 100, 'hoop');
+	hoop = game.add.group();
 
-	game.add.sprite(224, 790, 'ball');
+	var hoopSprite = hoop.create(141, 100, 'hoop');
+	var left_rim = hoop.create(236, 292, 'side rim');
+	var right_rim = hoop.create(394, 292, 'side rim');
+	var front_rim = hoop.create(236, 292, 'front rim');
+
+	balls = game.add.group();
+	balls.enableBody = true;
+	ball = balls.create(224, 790, 'ball');
+	game.physics.arcade.enable(ball);
+	ball.body.bounce.y = 0.2;
+	ball.body.gravity.y = 0;
+	ball.body.collideWorldBounds = true;
 
 }
 
