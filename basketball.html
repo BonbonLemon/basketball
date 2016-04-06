@@ -8,6 +8,10 @@
         body {
             margin: 0;
         }
+				canvas {
+					margin: 0 auto;
+					border: thin solid black;
+				}
     </style>
 </head>
 <body>
@@ -18,67 +22,24 @@ var game = new Phaser.Game(640, 1000, Phaser.AUTO, '', { preload: preload, creat
 
 function preload() {
 
-    game.load.image('ball', 'assets/.png');
+    game.load.image('ball', 'assets/ball.png');
     game.load.image('hoop', 'assets/hoop.png');
 
 }
 
 function create() {
 
+	game.stage.backgroundColor = "#ffffff";
+
 	game.add.sprite(141, 100, 'hoop');
+
+	game.add.sprite(224, 790, 'ball');
 
 }
 
 function update() {
 
-    //  Collide the player and the stars with the platforms
-    game.physics.arcade.collide(player, platforms);
-    game.physics.arcade.collide(stars, platforms);
 
-    //  Checks to see if the player overlaps with any of the stars, if he does call the collectStar function
-    game.physics.arcade.overlap(player, stars, collectStar, null, this);
-
-    //  Reset the players velocity (movement)
-    player.body.velocity.x = 0;
-
-    if (cursors.left.isDown)
-    {
-        //  Move to the left
-        player.body.velocity.x = -150;
-
-        player.animations.play('left');
-    }
-    else if (cursors.right.isDown)
-    {
-        //  Move to the right
-        player.body.velocity.x = 150;
-
-        player.animations.play('right');
-    }
-    else
-    {
-        //  Stand still
-        player.animations.stop();
-
-        player.frame = 4;
-    }
-
-    //  Allow the player to jump if they are touching the ground.
-    if (cursors.up.isDown && player.body.touching.down)
-    {
-        player.body.velocity.y = -350;
-    }
-
-}
-
-function collectStar (player, star) {
-
-    // Removes the star from the screen
-    star.kill();
-
-    //  Add and update the score
-    score += 10;
-    scoreText.text = 'Score: ' + score;
 
 }
 
