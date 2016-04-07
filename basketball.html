@@ -39,7 +39,7 @@ function create() {
 
 	game.physics.startSystem(Phaser.Physics.P2JS);
 
-  game.physics.p2.restitution = 0.9;
+  game.physics.p2.restitution = 0.7;
   game.physics.p2.gravity.y = 1800;
 
 	game.stage.backgroundColor = "#ffffff";
@@ -58,8 +58,13 @@ function create() {
 	right_rim.body.setCircle(4.5);
 	right_rim.body.static = true;
 
-	ball.body.setCircle(96);
+	circleshape = ball.body.setCircle(67); // NOTE: Full size is 96
 	ball.launched = false;
+
+	// ball.scale.setTo(0.7, 0.7);
+
+	game.add.tween(ball.scale).to({x : 0.7, y : 0.7}, 1000, Phaser.Easing.Linear.None, true, 0, 0, false);
+	// game.add.tween(circleshape).to({radius : game.physics.p2.pxm(18)}, 1000, Phaser.Easing.Linear.None, true, 0, 1, true);
 
 	cursors = game.input.keyboard.createCursorKeys();
 
