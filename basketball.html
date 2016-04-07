@@ -40,15 +40,15 @@ function create() {
 	game.physics.startSystem(Phaser.Physics.P2JS);
 
   game.physics.p2.restitution = 0.6;
-  game.physics.p2.gravity.y = 3300;
+  game.physics.p2.gravity.y = 0;
 
 	game.stage.backgroundColor = "#ffffff";
 
 	hoop = game.add.sprite(141, 100, 'hoop');
 	left_rim = game.add.sprite(241, 296, 'side rim');
 	right_rim = game.add.sprite(398, 296, 'side rim');
+	// front_rim = game.add.sprite(237, 292, 'front rim');
 	ball = game.add.sprite(320, 875, 'ball');
-	front_rim = game.add.sprite(237, 292, 'front rim');
 
 	game.physics.p2.enable([ left_rim, right_rim, ball ], false);
 
@@ -61,11 +61,6 @@ function create() {
 	circleshape = ball.body.setCircle(57); // NOTE: Full size is 96
 	ball.launched = false;
 
-	// ball.scale.setTo(0.7, 0.7);
-
-	game.add.tween(ball.scale).to({x : 0.6, y : 0.6}, 1000, Phaser.Easing.Linear.None, true, 0, 0, false);
-	// game.add.tween(circleshape).to({radius : game.physics.p2.pxm(18)}, 1000, Phaser.Easing.Linear.None, true, 0, 1, true);
-
 	cursors = game.input.keyboard.createCursorKeys();
 
 	game.input.onDown.add(launch, this);
@@ -73,6 +68,10 @@ function create() {
 }
 
 function update() {
+
+	if (!ball.launched) {
+		ball.body.moves = false;
+	}
 
 	if (cursors.left.isDown)
   {
@@ -88,8 +87,10 @@ function update() {
 function launch() {
 
 	if (ball.launched === false) {
+		ball.launched = true;
+		game.physics.p2.gravity.y = 3300;
+		game.add.tween(ball.scale).to({x : 0.6, y : 0.6}, 500, Phaser.Easing.Linear.None, true, 0, 0, false);
 		ball.body.velocity.y = -2300;
-		// ball.launched = true;
 	}
 
 }
