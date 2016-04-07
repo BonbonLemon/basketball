@@ -33,30 +33,81 @@ var hoop, ball;
 
 function create() {
 
-	game.physics.startSystem(Phaser.Physics.ARCADE);
+	// game.physics.startSystem(Phaser.Physics.ARCADE);
+	game.physics.startSystem(Phaser.Physics.P2JS);
+	game.physics.p2.gravity.y = 1800;
 
 	game.stage.backgroundColor = "#ffffff";
 
-	hoop = game.add.group();
+	// hoop = game.add.group();
+	// hoop.enableBody = true;
+	hoop = game.add.sprite(141, 100, 'hoop');
+	// var left_rim = hoop.create(236, 292, 'side rim');
+	// left_rim.body.immovable = true;
+	// game.physics.p2.enable(left_rim, true);
+	// var right_rim = hoop.create(394, 292, 'side rim');
+	// right_rim.body.immovable = true;
+	// var front_rim = hoop.create(236, 292, 'front rim');
+	left_rim = game.add.sprite(241, 296, 'side rim');
+	right_rim = game.add.sprite(398, 296, 'side rim');
+	ball = game.add.sprite(320, 875, 'ball');
+	front_rim = game.add.sprite(237, 292, 'front rim');
 
-	var hoopSprite = hoop.create(141, 100, 'hoop');
-	var left_rim = hoop.create(236, 292, 'side rim');
-	var right_rim = hoop.create(394, 292, 'side rim');
-	var front_rim = hoop.create(236, 292, 'front rim');
+	game.physics.p2.enable([ left_rim, right_rim, ball ], false);
 
-	balls = game.add.group();
-	balls.enableBody = true;
-	ball = balls.create(224, 790, 'ball');
-	game.physics.arcade.enable(ball);
-	ball.body.bounce.y = 0.2;
-	ball.body.gravity.y = 0;
-	ball.body.collideWorldBounds = true;
+	left_rim.body.setCircle(4.5);
+	right_rim.body.setCircle(4.5);
+	left_rim.body.static = true;
+	right_rim.body.static = true;
+
+	ball.body.setCircle(96);
+	ball.launched = false;
+	var spriteMaterial = game.physics.p2.createMaterial('spriteMaterial', ball.body);
+
+  var worldMaterial = game.physics.p2.createMaterial('worldMaterial');
+
+  //  4 trues = the 4 faces of the world in left, right, top, bottom order
+  game.physics.p2.setWorldMaterial(worldMaterial, true, true, true, true);
+
+  //  Here is the contact material. It's a combination of 2 materials, so whenever shapes with
+  //  those 2 materials collide it uses the following settings.
+  //  A single material can be used by as many different sprites as you like.
+  var contactMaterial = game.physics.p2.createContactMaterial(spriteMaterial, worldMaterial);
+
+  contactMaterial.friction = 0.3;     // Friction to use in the contact of these two materials.
+  contactMaterial.restitution = 1.0;  // Restitution (i.e. how bouncy it is!) to use in the contact of these two materials.
+  contactMaterial.stiffness = 1e7;    // Stiffness of the resulting ContactEquation that this ContactMaterial generate.
+  contactMaterial.relaxation = 3;     // Relaxation of the resulting ContactEquation that this ContactMaterial generate.
+  contactMaterial.frictionStiffness = 1e7;    // Stiffness of the resulting FrictionEquation that this ContactMaterial generate.
+  contactMaterial.frictionRelaxation = 3;     // Relaxation of the resulting FrictionEquation that this ContactMaterial generate.
+  contactMaterial.surfaceVelocity = 0;        // Will add surface velocity to this material. If bodyA rests on top if bodyB, and the surface velocity is positive, bodyA will slide to the right.
+
+	// balls = game.add.group();
+	// balls.enableBody = true;
+	// ball = balls.create(224, 790, 'ball');
+	// game.physics.arcade.enable(ball);
+	// ball.body.bounce.y = 0.2;
+	// ball.body.gravity.y = 0;
+	// ball.body.collideWorldBounds = true;
+
+	cursors = game.input.keyboard.createCursorKeys();
+
+	game.input.onDown.add(launch, this);
 
 }
 
 function update() {
 
 
+
+}
+
+function launch() {
+
+	if (ball.launched === false) {
+		ball.body.velocity.y = -1650;
+		// ball.launched = true;
+	}
 
 }
 
