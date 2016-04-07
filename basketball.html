@@ -18,7 +18,7 @@
 
 <script type="text/javascript">
 
-var game = new Phaser.Game(640, 1000, Phaser.AUTO, '', { preload: preload, create: create, update: update });
+var game = new Phaser.Game(640, 1000, Phaser.CANVAS, '', { preload: preload, create: create, update: update });
 
 function preload() {
 
@@ -39,30 +39,27 @@ function create() {
 
 	game.physics.startSystem(Phaser.Physics.P2JS);
 
-  game.physics.p2.restitution = 1;
+  game.physics.p2.restitution = 0.9;
   game.physics.p2.gravity.y = 1800;
 
 	game.stage.backgroundColor = "#ffffff";
 
-	// hoop = game.add.sprite(141, 100, 'hoop');
-	left_rim = game.add.sprite(241, 296, 'ball');
-	right_rim = game.add.sprite(398, 296, 'ball');
+	hoop = game.add.sprite(141, 100, 'hoop');
+	left_rim = game.add.sprite(241, 296, 'side rim');
+	right_rim = game.add.sprite(398, 296, 'side rim');
 	ball = game.add.sprite(320, 875, 'ball');
-	// front_rim = game.add.sprite(237, 292, 'front rim');
+	front_rim = game.add.sprite(237, 292, 'front rim');
 
 	game.physics.p2.enable([ left_rim, right_rim, ball ], false);
 
-	// left_rim.body.setCircle(4.5);
-	// left_rim.body.static = true;
-	left_rim.body.setCircle(96);
-	//
-	// right_rim.body.setCircle(4.5);
-	// right_rim.body.static = true;
-	right_rim.body.setCircle(96);
+	left_rim.body.setCircle(4.5);
+	left_rim.body.static = true;
+
+	right_rim.body.setCircle(4.5);
+	right_rim.body.static = true;
 
 	ball.body.setCircle(96);
 	ball.launched = false;
-	// ball.body.setCircle(4.5);
 
 	cursors = game.input.keyboard.createCursorKeys();
 
