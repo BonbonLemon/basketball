@@ -56,7 +56,7 @@ function create() {
 	// high_score_text = game.add.text(450, 25, 'High Score\n' + high_score, { font: 'Arial', fontSize: '32px', fill: '#000', align: 'center' });
 	current_score_text = game.add.text(300, 500, '', { font: 'Arial', fontSize: '64px', fill: '#000', align: 'center' });
 	current_best_text = game.add.text(230, 450, '', { font: 'Arial', fontSize: '32px', fill: '#000', align: 'center' });
-	current_best_score_text = game.add.text(300, 500, '', { font: 'Arial', fontSize: '64px', fill: '#000', align: 'center' });
+	current_best_score_text = game.add.text(300, 500, '', { font: 'Arial', fontSize: '64px', fill: '#00e6e6', align: 'center' });
 
 	hoop = game.add.sprite(141, 100, 'hoop');
 	left_rim = game.add.sprite(241, 296, 'side rim');
@@ -178,6 +178,7 @@ function launch(x_traj) {
 		game.add.tween(ball.scale).to({x : 0.6, y : 0.6}, 500, Phaser.Easing.Linear.None, true, 0, 0, false);
 		ball.body.velocity.x = x_traj;
 		ball.body.velocity.y = -2300;
+		ball.body.rotateRight(x_traj / 4);
 	}
 
 }
