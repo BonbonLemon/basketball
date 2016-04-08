@@ -53,7 +53,8 @@ function create() {
 
 	game.stage.backgroundColor = "#ffffff";
 
-	high_score_text = game.add.text(450, 25, 'High Score\n' + high_score, { font: 'Arial', fontSize: '32px', fill: '#000', align: 'center' });
+	// high_score_text = game.add.text(450, 25, 'High Score\n' + high_score, { font: 'Arial', fontSize: '32px', fill: '#000', align: 'center' });
+	current_score_text = game.add.text(300, 500, '', { font: 'Arial', fontSize: '64px', fill: '#000', align: 'center' });
 	current_best_text = game.add.text(230, 450, '', { font: 'Arial', fontSize: '32px', fill: '#000', align: 'center' });
 	current_best_score_text = game.add.text(300, 500, '', { font: 'Arial', fontSize: '64px', fill: '#000', align: 'center' });
 
@@ -94,15 +95,11 @@ function update() {
 		ball.body.collideWorldBounds = false;
 		if (ball.body.x > 241 && ball.body.x < 398) {
 			current_score += 1;
-			if (current_score_text) {
-				current_score_text.text = current_score;
-			} else {
-				current_score_text = game.add.text(300, 500, current_score, { font: 'Arial', fontSize: '64px', fill: '#000', align: 'center' });
-			}
+			current_score_text.text = current_score;
 		} else {
 			if (current_score > high_score) {
 				high_score = current_score;
-				high_score_text.text = 'High Score\n' + high_score;
+			// 	high_score_text.text = 'High Score\n' + high_score;
 			}
 			current_score = 0;
 			current_score_text.text = '';
@@ -139,7 +136,6 @@ function createBall() {
 	ball = game.add.sprite(xpos, 875, 'ball');
 	game.physics.p2.enable(ball, false);
 	ball.body.setCircle(96); // NOTE: Goes from 96 to 57
-	ball.body.setCollisionGroup(collisionGroup);
 	ball.launched = false;
 	ball.isBelowHoop = false;
 
@@ -154,6 +150,7 @@ function click(pointer) {
 
 	var bodies = game.physics.p2.hitTest(pointer.position, [ ball.body ]);
 	if (bodies.length) {
+		start_location = [pointer.x, pointer.y];
 		isDown = true;
 		location_interval = setInterval(function () {
 			start_location = [pointer.x, pointer.y];
@@ -171,21 +168,25 @@ function release(pointer) {
 
 		if (end_location[1] < start_location[1]) {
 			var slope = [end_location[0] - start_location[0], end_location[1] - start_location[1]];
-			console.log(slope);
+			var x_traj = -2300 * slope[0] / slope[1];
+			launch(x_traj);
+			launch();
 		}
 	}
 
 }
 
-function launch() {
+function launch(x_traj) {
 
 	if (ball.launched === false) {
 		ball.body.setCircle(57);
+		ball.body.setCollisionGroup(collisionGroup);
 		current_best_text.text = '';
 		current_best_score_text.text = '';
 		ball.launched = true;
 		game.physics.p2.gravity.y = 3300;
 		game.add.tween(ball.scale).to({x : 0.6, y : 0.6}, 500, Phaser.Easing.Linear.None, true, 0, 0, false);
+		ball.body.velocity.x = x_traj;
 		ball.body.velocity.y = -2300;
 	}
 
