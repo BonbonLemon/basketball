@@ -146,20 +146,35 @@ function createBall() {
 }
 
 var location_interval;
+var isDown = false;
+var start_location;
+var end_location;
 
 function click(pointer) {
 
 	var bodies = game.physics.p2.hitTest(pointer.position, [ ball.body ]);
 	if (bodies.length) {
+		isDown = true;
 		location_interval = setInterval(function () {
-			console.log(pointer.x + ', ' + pointer.y);
-		}.bind(this), 100);
+			start_location = [pointer.x, pointer.y];
+		}.bind(this), 200);
 	}
 
 }
 
 function release(pointer) {
-	window.clearInterval(location_interval);
+
+	if (isDown) {
+		window.clearInterval(location_interval);
+		isDown = false;
+		end_location = [pointer.x, pointer.y];
+
+		if (end_location[1] < start_location[1]) {
+			var slope = [end_location[0] - start_location[0], end_location[1] - start_location[1]];
+			console.log(slope);
+		}
+	}
+
 }
 
 function launch() {
