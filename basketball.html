@@ -114,15 +114,6 @@ function update() {
 		createBall();
 	}
 
-	if (cursors.left.isDown)
-  {
-      ball.body.moveLeft(200);
-  }
-  else if (cursors.right.isDown)
-  {
-      ball.body.moveRight(200);
-  }
-
 }
 
 function createBall() {
@@ -170,7 +161,6 @@ function release(pointer) {
 			var slope = [end_location[0] - start_location[0], end_location[1] - start_location[1]];
 			var x_traj = -2300 * slope[0] / slope[1];
 			launch(x_traj);
-			launch();
 		}
 	}
 
