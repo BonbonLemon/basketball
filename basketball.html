@@ -15,6 +15,7 @@
     </style>
 </head>
 <body>
+	1 2 3 4 5
 
 <script type="text/javascript">
 
@@ -52,7 +53,7 @@ function create() {
 
 	game.stage.backgroundColor = "#ffffff";
 
-	high_score_text = game.add.text(450, 20, 'High Score\n' + high_score, { fontSize: '32px', fill: '#000', align: 'center' });
+	high_score_text = game.add.text(450, 25, 'High Score\n' + high_score, { font: 'Arial', fontSize: '32px', fill: '#000', align: 'center' });
 
 	hoop = game.add.sprite(141, 100, 'hoop');
 	left_rim = game.add.sprite(241, 296, 'side rim');
@@ -90,12 +91,18 @@ function update() {
 		ball.body.collideWorldBounds = false;
 		if (ball.body.x > 241 && ball.body.x < 398) {
 			current_score += 1;
+			if (current_score_text) {
+				current_score_text.text = current_score;
+			} else {
+				current_score_text = game.add.text(300, 500, current_score, { font: 'Arial', fontSize: '64px', fill: '#000', align: 'center' });
+			}
 		} else {
 			if (current_score > high_score) {
 				high_score = current_score;
 				high_score_text.text = 'High Score\n' + high_score;
 			}
 			current_score = 0;
+			current_score_text.text = current_score;
 		}
 	}
 
