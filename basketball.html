@@ -77,7 +77,8 @@ function create() {
 
 	cursors = game.input.keyboard.createCursorKeys();
 
-	game.input.onDown.add(launch, this);
+	game.input.onDown.add(click, this);
+	game.input.onUp.add(release, this);
 
 }
 
@@ -137,16 +138,34 @@ function createBall() {
 	}
 	ball = game.add.sprite(xpos, 875, 'ball');
 	game.physics.p2.enable(ball, false);
-	circleshape = ball.body.setCircle(57); // NOTE: Full size is 96
+	ball.body.setCircle(96); // NOTE: Goes from 96 to 57
 	ball.body.setCollisionGroup(collisionGroup);
 	ball.launched = false;
 	ball.isBelowHoop = false;
 
 }
 
+var location_interval;
+
+function click(pointer) {
+
+	var bodies = game.physics.p2.hitTest(pointer.position, [ ball.body ]);
+	if (bodies.length) {
+		location_interval = setInterval(function () {
+			console.log(pointer.x + ', ' + pointer.y);
+		}.bind(this), 100);
+	}
+
+}
+
+function release(pointer) {
+	window.clearInterval(location_interval);
+}
+
 function launch() {
 
 	if (ball.launched === false) {
+		ball.body.setCircle(57);
 		current_best_text.text = '';
 		current_best_score_text.text = '';
 		ball.launched = true;
