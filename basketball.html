@@ -39,7 +39,7 @@ function create() {
 
 	game.physics.startSystem(Phaser.Physics.P2JS);
 
-  game.physics.p2.restitution = 0.6;
+  game.physics.p2.restitution = 0.7;
   game.physics.p2.gravity.y = 0;
 
 	game.stage.backgroundColor = "#ffffff";
@@ -47,7 +47,6 @@ function create() {
 	hoop = game.add.sprite(141, 100, 'hoop');
 	left_rim = game.add.sprite(241, 296, 'side rim');
 	right_rim = game.add.sprite(398, 296, 'side rim');
-	// front_rim = game.add.sprite(237, 292, 'front rim');
 	ball = game.add.sprite(320, 875, 'ball');
 
 	game.physics.p2.enable([ left_rim, right_rim, ball ], false);
@@ -58,8 +57,7 @@ function create() {
 	right_rim.body.setCircle(4.5);
 	right_rim.body.static = true;
 
-	circleshape = ball.body.setCircle(57); // NOTE: Full size is 96
-	ball.launched = false;
+	createBall();
 
 	cursors = game.input.keyboard.createCursorKeys();
 
@@ -69,8 +67,17 @@ function create() {
 
 function update() {
 
-	if (!ball.launched) {
-		ball.body.moves = false;
+	if (ball.body.velocity.y > 0) {
+		front_rim = game.add.sprite(237, 292, 'front rim');
+	}
+
+	if (ball.body.velocity.y > 0 && ball.body.y > 300 && !ball.isBelowHoop) {
+		ball.isBelowHoop = true;
+		if (ball.body.x > 241 && ball.body.x < 398) {
+			console.log("made");
+		} else {
+			console.log("miss");
+		}
 	}
 
 	if (cursors.left.isDown)
@@ -81,6 +88,14 @@ function update() {
   {
       ball.body.moveRight(200);
   }
+
+}
+
+function createBall() {
+
+	circleshape = ball.body.setCircle(57); // NOTE: Full size is 96
+	ball.launched = false;
+	ball.isBelowHoop = false;
 
 }
 
