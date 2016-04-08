@@ -38,6 +38,7 @@ var current_score = 0;
 var current_score_text;
 var high_score = 0;
 var high_score_text;
+var current_best_text;
 
 var collisionGroup;
 
@@ -53,6 +54,8 @@ function create() {
 	game.stage.backgroundColor = "#ffffff";
 
 	high_score_text = game.add.text(450, 25, 'High Score\n' + high_score, { font: 'Arial', fontSize: '32px', fill: '#000', align: 'center' });
+	current_best_text = game.add.text(230, 450, '', { font: 'Arial', fontSize: '32px', fill: '#000', align: 'center' });
+	current_best_score_text = game.add.text(300, 500, '', { font: 'Arial', fontSize: '64px', fill: '#000', align: 'center' });
 
 	hoop = game.add.sprite(141, 100, 'hoop');
 	left_rim = game.add.sprite(241, 296, 'side rim');
@@ -101,7 +104,9 @@ function update() {
 				high_score_text.text = 'High Score\n' + high_score;
 			}
 			current_score = 0;
-			current_score_text.text = current_score;
+			current_score_text.text = '';
+			current_best_text.text = 'Current Best';
+			current_best_score_text.text = high_score;
 		}
 	}
 
@@ -128,7 +133,7 @@ function createBall() {
 	if (current_score === 0) {
 		xpos = 320;
 	} else {
-		xpos = Math.random() * 640;
+		xpos = 96 + Math.random() * 448;
 	}
 	ball = game.add.sprite(xpos, 875, 'ball');
 	game.physics.p2.enable(ball, false);
@@ -142,6 +147,8 @@ function createBall() {
 function launch() {
 
 	if (ball.launched === false) {
+		current_best_text.text = '';
+		current_best_score_text.text = '';
 		ball.launched = true;
 		game.physics.p2.gravity.y = 3300;
 		game.add.tween(ball.scale).to({x : 0.6, y : 0.6}, 500, Phaser.Easing.Linear.None, true, 0, 0, false);
