@@ -15,7 +15,6 @@
     </style>
 </head>
 <body>
-	1 2 3 4 5
 
 <script type="text/javascript">
 
@@ -123,11 +122,17 @@ function update() {
 
 }
 
-function createBall(rad = 57) {
+function createBall() {
 
-	ball = game.add.sprite(320, 875, 'ball');
+	var xpos;
+	if (current_score === 0) {
+		xpos = 320;
+	} else {
+		xpos = Math.random() * 640;
+	}
+	ball = game.add.sprite(xpos, 875, 'ball');
 	game.physics.p2.enable(ball, false);
-	circleshape = ball.body.setCircle(rad); // NOTE: Full size is 96
+	circleshape = ball.body.setCircle(57); // NOTE: Full size is 96
 	ball.body.setCollisionGroup(collisionGroup);
 	ball.launched = false;
 	ball.isBelowHoop = false;
