@@ -35,6 +35,8 @@ var right_rim;
 var ball;
 var front_rim;
 
+var collisionGroup;
+
 function create() {
 
 	game.physics.startSystem(Phaser.Physics.P2JS);
@@ -42,20 +44,23 @@ function create() {
   game.physics.p2.restitution = 0.7;
   game.physics.p2.gravity.y = 0;
 
+	collisionGroup = game.physics.p2.createCollisionGroup();
+
 	game.stage.backgroundColor = "#ffffff";
 
 	hoop = game.add.sprite(141, 100, 'hoop');
 	left_rim = game.add.sprite(241, 296, 'side rim');
 	right_rim = game.add.sprite(398, 296, 'side rim');
-	ball = game.add.sprite(320, 875, 'ball');
 
-	game.physics.p2.enable([ left_rim, right_rim, ball ], false);
+	game.physics.p2.enable([ left_rim, right_rim], false);
 
 	left_rim.body.setCircle(4.5);
 	left_rim.body.static = true;
+	left_rim.body.setCollisionGroup(collisionGroup);
 
 	right_rim.body.setCircle(4.5);
 	right_rim.body.static = true;
+	right_rim.body.setCollisionGroup(collisionGroup);
 
 	createBall();
 
@@ -67,17 +72,25 @@ function create() {
 
 function update() {
 
-	if (ball.body.velocity.y > 0) {
+	if (ball && ball.body.velocity.y > 0) {
 		front_rim = game.add.sprite(237, 292, 'front rim');
+		ball.body.collides(collisionGroup);
 	}
 
-	if (ball.body.velocity.y > 0 && ball.body.y > 300 && !ball.isBelowHoop) {
+	if (ball && ball.body.velocity.y > 0 && ball.body.y > 300 && !ball.isBelowHoop) {
 		ball.isBelowHoop = true;
+		ball.body.collideWorldBounds = false;
 		if (ball.body.x > 241 && ball.body.x < 398) {
 			console.log("made");
 		} else {
 			console.log("miss");
 		}
+	}
+
+	if (ball && ball.body.y > 1300) {
+		game.physics.p2.gravity.y = 0;
+		ball.kill();
+		createBall();
 	}
 
 	if (cursors.left.isDown)
@@ -93,7 +106,10 @@ function update() {
 
 function createBall() {
 
+	ball = game.add.sprite(320, 875, 'ball');
+	game.physics.p2.enable(ball, false);
 	circleshape = ball.body.setCircle(57); // NOTE: Full size is 96
+	ball.body.setCollisionGroup(collisionGroup);
 	ball.launched = false;
 	ball.isBelowHoop = false;
 
