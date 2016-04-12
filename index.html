@@ -12,6 +12,12 @@
 					margin: 0 auto;
 					border: thin solid black;
 				}
+				span {
+					display: block;
+					margin: 30px auto;
+					width: 500px;
+					text-align: center;
+				}
     </style>
 </head>
 <body>
@@ -82,6 +88,9 @@ function create() {
 	game.input.onDown.add(click, this);
 	game.input.onUp.add(release, this);
 
+	var instructions = document.createElement("span");
+	instructions.innerHTML = "Instructions: Quickly drag the ball to shoot the ball into the hoop!";
+	document.body.appendChild(instructions);
 }
 
 function update() {
