@@ -37,6 +37,8 @@ function preload() {
 		game.load.audio('score', 'assets/audio/score.wav');
 		game.load.audio('backboard', 'assets/audio/backboard.wav');
 		game.load.audio('whoosh', 'assets/audio/whoosh.wav');
+		game.load.audio('fail', 'assets/audio/fail.wav');
+		game.load.audio('spawn', 'assets/audio/spawn.wav');
 
 }
 
@@ -54,7 +56,9 @@ var hoop,
 var fx,
 		score_sound,
 		backboard,
-		whoosh;
+		whoosh,
+		fail,
+		spawn;
 
 var collisionGroup;
 
@@ -73,6 +77,9 @@ function create() {
 	backboard = game.add.audio('backboard');
 	backboard.volume = 0.5;
 	whoosh = game.add.audio('whoosh');
+	fail = game.add.audio('fail');
+	fail.volume = 0.12;
+	spawn = game.add.audio('spawn');
 
 	game.stage.backgroundColor = "#ffffff";
 
@@ -126,6 +133,7 @@ function update() {
 			current_score_text.text = current_score;
 			score_sound.play();
 		} else {
+			fail.play();
 			if (current_score > high_score) {
 				high_score = current_score;
 			// 	high_score_text.text = 'High Score\n' + high_score;
@@ -159,7 +167,9 @@ function createBall() {
 	} else {
 		xpos = 60 + Math.random() * 280;
 	}
+	spawn.play();
 	ball = game.add.sprite(xpos, 547, 'ball');
+	game.add.tween(ball.scale).from({x : 0.7, y : 0.7}, 100, Phaser.Easing.Linear.None, true, 0, 0, false);
 	game.physics.p2.enable(ball, false);
 	ball.body.setCircle(60); // NOTE: Goes from 60 to 36
 	ball.launched = false;
