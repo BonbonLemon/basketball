@@ -38,23 +38,27 @@ function preload() {
 
 }
 
-var hoop;
-var left_rim;
-var right_rim;
-var ball;
-var front_rim;
-var current_score = 0;
-var current_score_text;
-var high_score = 0;
-var high_score_text;
-var current_best_text;
-var fx;
+var hoop,
+ 		left_rim,
+ 		right_rim,
+ 		ball,
+ 		front_rim,
+ 		current_score = 0,
+ 		current_score_text,
+ 		high_score = 0,
+ 		high_score_text,
+ 		current_best_text;
+
+var fx,
+		score_sound;
 
 var collisionGroup;
 
 function create() {
 
 	game.physics.startSystem(Phaser.Physics.P2JS);
+
+	game.physics.p2.setImpactEvents(true);
 
   game.physics.p2.restitution = 0.6;
   game.physics.p2.gravity.y = 0;
@@ -76,7 +80,7 @@ function create() {
 
 	game.physics.p2.enable([ left_rim, right_rim], false);
 
-	left_rim.body.setCircle(2.5); // 4.5
+	left_rim.body.setCircle(2.5);
 	left_rim.body.static = true;
 	left_rim.body.setCollisionGroup(collisionGroup);
 	left_rim.body.collides([collisionGroup]);
@@ -93,6 +97,8 @@ function create() {
 	game.input.onDown.add(click, this);
 	game.input.onUp.add(release, this);
 
+	score_sound = game.add.audio('score');
+
 	var instructions = document.createElement("span");
 	instructions.innerHTML = "Instructions: Quickly drag the ball to shoot the ball into the hoop!";
 	document.body.appendChild(instructions);
@@ -101,16 +107,17 @@ function create() {
 function update() {
 
 	if (ball && ball.body.velocity.y > 0) {
-		front_rim = game.add.sprite(148, 182, 'front rim'); // 237, 292
+		front_rim = game.add.sprite(148, 182, 'front rim');
 		ball.body.collides([collisionGroup]);
 	}
 
-	if (ball && ball.body.velocity.y > 0 && ball.body.y > 188 && !ball.isBelowHoop) { // 300
+	if (ball && ball.body.velocity.y > 0 && ball.body.y > 188 && !ball.isBelowHoop) {
 		ball.isBelowHoop = true;
 		ball.body.collideWorldBounds = false;
-		if (ball.body.x > 151 && ball.body.x < 249) { // 241, 398
+		if (ball.body.x > 151 && ball.body.x < 249) {
 			current_score += 1;
 			current_score_text.text = current_score;
+			score_sound.play();
 		} else {
 			if (current_score > high_score) {
 				high_score = current_score;
@@ -123,7 +130,7 @@ function update() {
 		}
 	}
 
-	if (ball && ball.body.y > 800) { // 1300
+	if (ball && ball.body.y > 800) {
 		game.physics.p2.gravity.y = 0;
 		ball.kill();
 		createBall();
@@ -135,13 +142,13 @@ function createBall() {
 
 	var xpos;
 	if (current_score === 0) {
-		xpos = 200; // 320
+		xpos = 200;
 	} else {
-		xpos = 60 + Math.random() * 280; // 96, 448
+		xpos = 60 + Math.random() * 280;
 	}
 	ball = game.add.sprite(xpos, 547, 'ball');
 	game.physics.p2.enable(ball, false);
-	ball.body.setCircle(60); // NOTE: Goes from 96 to 57 [60 to 36]
+	ball.body.setCircle(60); // NOTE: Goes from 60 to 36
 	ball.launched = false;
 	ball.isBelowHoop = false;
 
@@ -184,8 +191,9 @@ function release(pointer) {
 function launch(x_traj) {
 
 	if (ball.launched === false) {
-		ball.body.setCircle(36); // 57
+		ball.body.setCircle(36);
 		ball.body.setCollisionGroup(collisionGroup);
+		// ball.body.collides(collisionGroup, score_sound.play, this);
 		current_best_text.text = '';
 		current_best_score_text.text = '';
 		ball.launched = true;
