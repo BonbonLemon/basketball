@@ -1,6 +1,6 @@
 # Basketball
 
-![Alt text](/images/demo_pic.png?raw=true)
+![Alt text](assets/images/demo_pic.png?raw=true)
 
 [Basketball][basketball]
 
