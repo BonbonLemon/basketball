@@ -34,6 +34,8 @@ function preload() {
 		game.load.image('side rim', 'assets/side_rim.png');
 		game.load.image('front rim', 'assets/front_rim.png');
 
+		game.load.image('lose0', 'assets/lose0.png');
+
 		game.load.audio('score', 'assets/audio/score.wav');
 		game.load.audio('backboard', 'assets/audio/backboard.wav');
 		game.load.audio('whoosh', 'assets/audio/whoosh.wav');
@@ -53,12 +55,18 @@ var hoop,
  		high_score_text,
  		current_best_text;
 
-var fx,
-		score_sound,
+var lose0;
+
+var score_sound,
 		backboard,
 		whoosh,
 		fail,
 		spawn;
+
+var moveInTween,
+		fadeInTween,
+		moveOutTween,
+		fadeOutTween;
 
 var collisionGroup;
 
@@ -73,12 +81,12 @@ function create() {
 
 	collisionGroup = game.physics.p2.createCollisionGroup();
 
-	fx = game.add.audio('score');
+	score_sound = game.add.audio('score');
 	backboard = game.add.audio('backboard');
 	backboard.volume = 0.5;
 	whoosh = game.add.audio('whoosh');
 	fail = game.add.audio('fail');
-	fail.volume = 0.12;
+	fail.volume = 0.1;
 	spawn = game.add.audio('spawn');
 
 	game.stage.backgroundColor = "#ffffff";
@@ -111,7 +119,6 @@ function create() {
 	game.input.onDown.add(click, this);
 	game.input.onUp.add(release, this);
 
-	score_sound = game.add.audio('score');
 
 	var instructions = document.createElement("span");
 	instructions.innerHTML = "Instructions: Quickly drag the ball to shoot the ball into the hoop!";
@@ -142,6 +149,12 @@ function update() {
 			current_score_text.text = '';
 			current_best_text.text = 'Current Best';
 			current_best_score_text.text = high_score;
+
+			lose0 = game.add.sprite(180, 100, 'lose0');
+			lose0.scale.setTo(0.25, 0.25);
+			moveInTween = game.add.tween(lose0).from( { y: 150 }, 600, Phaser.Easing.Elastic.Out, true);
+			fadeInTween = game.add.tween(lose0).from( { alpha: 0 }, 300, Phaser.Easing.Linear.None, true, 0, 0, false);
+			moveInTween.onComplete.add(tweenOut, this);
 		}
 	}
 
@@ -151,6 +164,11 @@ function update() {
 		createBall();
 	}
 
+}
+
+function tweenOut() {
+	moveOutTween = game.add.tween(lose0).to( { y: 50 }, 600, Phaser.Easing.Elastic.In, true);
+	fadeOutTween = game.add.tween(lose0).to( { alpha: 0 }, 600, Phaser.Easing.Linear.None, true, 0, 0, false);
 }
 
 function hitRim() {
