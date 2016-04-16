@@ -34,7 +34,16 @@ function preload() {
 		game.load.image('side rim', 'assets/side_rim.png');
 		game.load.image('front rim', 'assets/front_rim.png');
 
+		game.load.image('win0', 'assets/win0.png');
+		game.load.image('win1', 'assets/win1.png');
+		game.load.image('win2', 'assets/win2.png');
+		game.load.image('win3', 'assets/win3.png');
+		game.load.image('win4', 'assets/win4.png');
 		game.load.image('lose0', 'assets/lose0.png');
+		game.load.image('lose1', 'assets/lose1.png');
+		game.load.image('lose2', 'assets/lose2.png');
+		game.load.image('lose3', 'assets/lose3.png');
+		game.load.image('lose4', 'assets/lose4.png');
 
 		game.load.audio('score', 'assets/audio/score.wav');
 		game.load.audio('backboard', 'assets/audio/backboard.wav');
@@ -55,8 +64,6 @@ var hoop,
  		high_score_text,
  		current_best_text;
 
-var lose0;
-
 var score_sound,
 		backboard,
 		whoosh,
@@ -66,7 +73,9 @@ var score_sound,
 var moveInTween,
 		fadeInTween,
 		moveOutTween,
-		fadeOutTween;
+		fadeOutTween,
+		emoji,
+		emojiName;
 
 var collisionGroup;
 
@@ -135,11 +144,14 @@ function update() {
 	if (ball && ball.body.velocity.y > 0 && ball.body.y > 188 && !ball.isBelowHoop) {
 		ball.isBelowHoop = true;
 		ball.body.collideWorldBounds = false;
+		var rand = Math.floor(Math.random() * 5);
 		if (ball.body.x > 151 && ball.body.x < 249) {
+			emojiName = "win" + rand;
 			current_score += 1;
 			current_score_text.text = current_score;
 			score_sound.play();
 		} else {
+			emojiName = "lose" + rand;
 			fail.play();
 			if (current_score > high_score) {
 				high_score = current_score;
@@ -149,16 +161,15 @@ function update() {
 			current_score_text.text = '';
 			current_best_text.text = 'Current Best';
 			current_best_score_text.text = high_score;
-
-			lose0 = game.add.sprite(180, 100, 'lose0');
-			lose0.scale.setTo(0.25, 0.25);
-			moveInTween = game.add.tween(lose0).from( { y: 150 }, 600, Phaser.Easing.Elastic.Out, true);
-			fadeInTween = game.add.tween(lose0).from( { alpha: 0 }, 300, Phaser.Easing.Linear.None, true, 0, 0, false);
-			moveInTween.onComplete.add(tweenOut, this);
 		}
+		emoji = game.add.sprite(180, 100, emojiName);
+		emoji.scale.setTo(0.25, 0.25);
+		moveInTween = game.add.tween(emoji).from( { y: 150 }, 500, Phaser.Easing.Elastic.Out, true);
+		fadeInTween = game.add.tween(emoji).from( { alpha: 0 }, 200, Phaser.Easing.Linear.None, true, 0, 0, false);
+		moveInTween.onComplete.add(tweenOut, this);
 	}
 
-	if (ball && ball.body.y > 800) {
+	if (ball && ball.body.y > 1200) {
 		game.physics.p2.gravity.y = 0;
 		ball.kill();
 		createBall();
@@ -167,8 +178,11 @@ function update() {
 }
 
 function tweenOut() {
-	moveOutTween = game.add.tween(lose0).to( { y: 50 }, 600, Phaser.Easing.Elastic.In, true);
-	fadeOutTween = game.add.tween(lose0).to( { alpha: 0 }, 600, Phaser.Easing.Linear.None, true, 0, 0, false);
+	moveOutTween = game.add.tween(emoji).to( { y: 50 }, 600, Phaser.Easing.Elastic.In, true);
+	moveOutTween.onComplete.add(function() { emoji.kill(); }, this);
+	setTimeout(function () {
+		fadeOutTween = game.add.tween(emoji).to( { alpha: 0 }, 300, Phaser.Easing.Linear.None, true, 0, 0, false);
+	}, 450);
 }
 
 function hitRim() {
